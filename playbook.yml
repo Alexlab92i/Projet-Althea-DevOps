@@ -1,0 +1,31 @@
+---
+- name: Configuration de la machine Compta
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: 1. Installer curl
+      apt:
+        name: curl
+        state: present
+        update_cache: yes
+
+    - name: 2. Ajouter la clé GPG Wazuh
+      shell: curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | apt-key add -
+
+    - name: 3. Ajouter le dépôt Wazuh
+      shell: echo "deb https://packages.wazuh.com/4.x/apt/ stable main" | tee /etc/apt/sources.list.d/wazuh.list
+
+    - name: 4. Mettre à jour les paquets
+      apt:
+        update_cache: yes
+
+    - name: 5. Installer l'agent Wazuh (Securite)
+      apt:
+        name: wazuh-agent
+        state: present
+
+    - name: 6. Installer Prometheus Node Exporter (Supervision)
+      apt:
+        name: prometheus-node-exporter
+        state: present
