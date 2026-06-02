@@ -29,3 +29,27 @@
       apt:
         name: prometheus-node-exporter
         state: present
+
+    - name: 7. Installer Prometheus
+      apt:
+        name: prometheus
+        state: present
+
+    - name: 8. Installer Grafana
+      shell: |
+        curl -fsSL https://packages.grafana.com/gpg.key | gpg --dearmor -o /etc/apt/trusted.gpg.d/grafana.gpg
+        echo "deb https://packages.grafana.com/oss/deb stable main" | tee /etc/apt/sources.list.d/grafana.list
+        apt-get update
+        apt-get install -y grafana
+
+    - name: 9. Démarrer Grafana
+      systemd:
+        name: grafana-server
+        state: started
+        enabled: yes
+
+    - name: 10. Démarrer Prometheus
+      systemd:
+        name: prometheus
+        state: started
+        enabled: yes
